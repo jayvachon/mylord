@@ -7,18 +7,17 @@
 </head>
 <body>
 	<script src="./node_modules/pixi.js/dist/pixi.min.js"></script>
+	<script src="./events.js"></script>
 	<script src="./clock.js"></script>
 	<script src="./building.js"></script>
 	<script src="./unit.js"></script>
+	<script src="./player.js"></script>
 	<script type="text/javascript">
 
 		const app = new PIXI.Application({ backgroundColor: "0xffffff" });
 		document.body.appendChild(app.view);
 
-		let player = {
-			name: 'Sandy',
-			wealth: 1000000,
-		};
+		let player = new Player();
 
 		let state;
 		let clock = new Clock(10, 70);
@@ -33,16 +32,7 @@
 			//Set the game state
 			state = play;
 
-			const landlordName = new PIXI.Text(`Lord ${player.name}`);
-			landlordName.x = 10;
-			landlordName.y = 10;
-
-			const landlordWealth = new PIXI.Text(`$${player.wealth}`);
-			landlordWealth.x = 10;
-			landlordWealth.y = 40;
-
-			app.stage.addChild(landlordName);
-			app.stage.addChild(landlordWealth);
+			player.display();
 			app.stage.addChild(clock.label);
 
 			for (let i = 0; i < buildings.length; i ++) {
