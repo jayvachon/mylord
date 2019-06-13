@@ -16,7 +16,9 @@ class Building extends PIXI.Container {
 			this.units.push(new Unit(0, 0, 2));
 		}
 
-		ev.addEventListener('purchase building', this.purchaseBuilding);
+		reactor.addEventListener('purchase building', (building) => {
+			this.purchaseBuilding(building);
+		});
 	}
 
 	render() {
@@ -36,13 +38,13 @@ class Building extends PIXI.Container {
 		purchaseButton.y = this.position.y + 120;
 		purchaseButton.interactive = true;
 		purchaseButton.on("click", () => {
-			ev.dispatchEvent(tryPurchaseBuildingEvent(this));
+			reactor.dispatchEvent('try purchase building', this);
 		});
 		app.stage.addChild(purchaseButton);
 	}
 
-	purchaseBuilding(e) {
-		if (e.detail.building === this) {
+	purchaseBuilding(building) {
+		if (building === this) {
 			this.state = BuildingState.OWNED;
 		}
 	}

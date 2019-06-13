@@ -5,7 +5,12 @@ class Player extends PIXI.Container {
 		this.cash = 1000000;
 		this.buildings = [];
 
-		ev.addEventListener('try purchase building', this.tryPurchaseBuilding)
+		reactor.addEventListener('try purchase building', (building) => {
+			this.tryPurchaseBuilding(building);
+		});
+		reactor.addEventListener("advance month", () => {
+			// console.log("new month!");
+		});
 	}
 
 	display() {
@@ -21,13 +26,12 @@ class Player extends PIXI.Container {
 		app.stage.addChild(cashLabel);
 	}
 
-	tryPurchaseBuilding(e) {
-		console.log(this); // `this`` is the event target, not the player
-		
-		if (this.cash >= e.detail.building.value) {
-			buildings.pop(e.detail.building);
-			this.cash -= e.detail.building.value;
-			ev.dispatchEvent(purchaseBuildingEvent(e.detail.building));
+	tryPurchaseBuilding(building) {
+
+		if (this.cash >= building.value) {
+			this.buildings.push(building);
+			this.cash -= building.value;
+			reactor.dispatchEvent('purchase building', building);
 		} else {
 			console.log("Not enough cash!");
 		}

@@ -1,28 +1,38 @@
-// Event system
-const MyEventTarget = function() {
+class Event {
 
-    const target = document.createTextNode(null);
+	constructor(name) {
+		this.name = name;
+		this.callbacks = [];
+	}
 
-    this.addEventListener = target.addEventListener.bind(target);
-    this.removeEventListener = target.removeEventListener.bind(target);
-    this.dispatchEvent = target.dispatchEvent.bind(target);
+	registerCallback(callback) {
+		this.callbacks.push(callback);
+	}
 }
 
-const ev = new MyEventTarget();
+class Reactor {
 
-// Custom events
-const tryPurchaseBuildingEvent = function(building) {
-	return new CustomEvent('try purchase building', {
-		detail: {
-			building: building
-		}
-	});
+	constructor() {
+		this.events = {};
+	}
+
+	registerEvent(eventName) {
+		const event = new Event(eventName);
+		this.events[eventName] = event;
+	}
+
+	dispatchEvent(eventName, eventArgs) {
+		this.events[eventName].callbacks.forEach(function(callback) {
+			callback(eventArgs);
+		});
+	}
+
+	addEventListener(eventName, callback) {
+		this.events[eventName].registerCallback(callback);
+	}
 }
 
-const purchaseBuildingEvent = function(building) {
-	return new CustomEvent('purchase building', {
-		detail: {
-			building: building
-		}
-	});
-}
+const reactor = new Reactor();
+reactor.registerEvent('advance month');
+reactor.registerEvent('try purchase building');
+reactor.registerEvent('purchase building');
